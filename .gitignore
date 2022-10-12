@@ -33,3 +33,6 @@ tmp/
 # Config
 *-product.yaml
 *-develop.yaml
+
+./mq
+./mq.exe
