@@ -34,5 +34,5 @@ tmp/
 *-product.yaml
 *-develop.yaml
 
-./mq
-./mq.exe
+/mq
+/mq.exe
