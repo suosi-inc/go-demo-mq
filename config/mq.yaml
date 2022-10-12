@@ -13,7 +13,7 @@ rabbit:
   amqp: amqp://admin:admin@localhost:5672
   prefetch: 5
 
-queue:
+rabbitQueue:
   simple:
     name: go-simple
     goroutines: 3
@@ -23,3 +23,20 @@ queue:
     goroutines: 3
     routingKeys:
       - '#'
+
+kafka:
+  servers:
+    - kafka-online1:9092
+    - kafka-online2:9092
+    - kafka-online3:9092
+  compress: lz4
+  sasl:
+    enable: false
+    mechanism: PLAIN
+    username: admin
+    password: 08afd6f9ae0c6017d105b4ce580de885
+
+kafkaQueue:
+  topic: go-test
+  groupId: go-test-group
+  goroutines: 1

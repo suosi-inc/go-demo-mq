@@ -7,19 +7,19 @@ import (
 	"github.com/suosi-inc/go-demo/mq/internal/mq/config"
 	"github.com/suosi-inc/go-demo/mq/internal/mq/data/domain"
 	"github.com/suosi-inc/go-demo/mq/internal/pkg/log"
-	rabbit2 "github.com/suosi-inc/go-demo/mq/internal/pkg/rabbit"
+	"github.com/suosi-inc/go-demo/mq/internal/pkg/rabbits"
 	"github.com/x-funs/go-fun"
 )
 
 func RabbitSimple() {
 	// goroutines
 	goroutines := 1
-	if config.Cfg.Queue.Simple.Goroutines > 0 {
-		goroutines = config.Cfg.Queue.Simple.Goroutines
+	if config.Cfg.RabbitQueue.Simple.Goroutines > 0 {
+		goroutines = config.Cfg.RabbitQueue.Simple.Goroutines
 	}
 
-	queueName := config.Cfg.Queue.Simple.Name
-	simple, _ := rabbit2.NewSimple(queueName)
+	queueName := config.Cfg.RabbitQueue.Simple.Name
+	simple, _ := rabbits.NewSimple(queueName)
 
 	for i := 0; i < goroutines; i++ {
 		no := i
@@ -38,7 +38,8 @@ func RabbitSimple() {
 						_ = msg.Ack(false)
 					}
 				}
-
+			} else {
+				log.Error("Received topic error")
 			}
 		}()
 	}
@@ -47,15 +48,15 @@ func RabbitSimple() {
 func RabbitTopic() {
 	// goroutines
 	goroutines := 1
-	if config.Cfg.Queue.Topic.Goroutines > 0 {
-		goroutines = config.Cfg.Queue.Topic.Goroutines
+	if config.Cfg.RabbitQueue.Topic.Goroutines > 0 {
+		goroutines = config.Cfg.RabbitQueue.Topic.Goroutines
 	}
 
-	exchangeName := config.Cfg.Queue.Topic.Exchange
-	queueName := config.Cfg.Queue.Topic.Name
-	routingKeys := fun.SliceTrim(config.Cfg.Queue.Topic.RoutingKeys)
+	exchangeName := config.Cfg.RabbitQueue.Topic.Exchange
+	queueName := config.Cfg.RabbitQueue.Topic.Name
+	routingKeys := fun.SliceTrim(config.Cfg.RabbitQueue.Topic.RoutingKeys)
 
-	topic, _ := rabbit2.NewTopic(exchangeName)
+	topic, _ := rabbits.NewTopic(exchangeName)
 
 	for i := 0; i < goroutines; i++ {
 		no := i
@@ -74,7 +75,8 @@ func RabbitTopic() {
 						_ = msg.Ack(false)
 					}
 				}
-
+			} else {
+				log.Error("Received topic error")
 			}
 		}()
 	}

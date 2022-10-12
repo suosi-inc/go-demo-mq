@@ -25,7 +25,6 @@ func NewApp(args []string) error {
 
 	// Run args
 	if len(args) > 0 {
-
 		newRun(args)
 	}
 

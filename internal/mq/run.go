@@ -17,6 +17,10 @@ func newRun(args []string) {
 		sender.RabbitTopic()
 	case "rabbit-receiver-topic":
 		receiver.RabbitTopic()
+	case "kafka-send-topic":
+		sender.KafkaTopic()
+	case "kafka-receiver-topic":
+		receiver.KafkaTopic()
 	default:
 		log.Error("Run args failed")
 	}

@@ -6,13 +6,13 @@ import (
 	"github.com/suosi-inc/go-demo/mq/internal/mq/config"
 	"github.com/suosi-inc/go-demo/mq/internal/mq/data/domain"
 	"github.com/suosi-inc/go-demo/mq/internal/pkg/log"
-	rabbit2 "github.com/suosi-inc/go-demo/mq/internal/pkg/rabbit"
+	"github.com/suosi-inc/go-demo/mq/internal/pkg/rabbits"
 	"github.com/x-funs/go-fun"
 )
 
 func RabbitSimple() {
-	queueName := config.Cfg.Queue.Simple.Name
-	if simple, err := rabbit2.NewSimple(queueName); err == nil {
+	queueName := config.Cfg.RabbitQueue.Simple.Name
+	if simple, err := rabbits.NewSimple(queueName); err == nil {
 		var id int
 
 		for {
@@ -38,8 +38,8 @@ func RabbitSimple() {
 }
 
 func RabbitTopic() {
-	exchangeName := config.Cfg.Queue.Topic.Exchange
-	if topic, err := rabbit2.NewTopic(exchangeName); err == nil {
+	exchangeName := config.Cfg.RabbitQueue.Topic.Exchange
+	if topic, err := rabbits.NewTopic(exchangeName); err == nil {
 
 		var id int
 		var routingKey string
