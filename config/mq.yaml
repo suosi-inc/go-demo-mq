@@ -1,0 +1,25 @@
+app:
+  name: mq
+
+logger:
+  file: mq.log
+  format: text
+  level: info
+  maxSize: 256
+  maxAge: 3
+  maxBackups: 7
+
+rabbit:
+  amqp: amqp://admin:admin@localhost:5672
+  prefetch: 5
+
+queue:
+  simple:
+    name: go-simple
+    goroutines: 3
+  topic:
+    exchange: go-topic
+    name: go-topic-log
+    goroutines: 3
+    routingKeys:
+      - "log.*"
