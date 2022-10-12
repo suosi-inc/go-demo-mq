@@ -15,10 +15,12 @@ type topic struct {
 	Exclusive  bool
 }
 
+// NewTopic 声明 Topic 队列
 func NewTopic(exchange string) (*topic, error) {
 	return NewTopicWithOptions(exchange, true, false, false)
 }
 
+// NewTopicWithOptions 声明 Topic 队列
 func NewTopicWithOptions(exchange string, durable bool, autoDelete bool, exclusive bool) (*topic, error) {
 	channel := di.GetRabbit()
 
@@ -46,7 +48,13 @@ func NewTopicWithOptions(exchange string, durable bool, autoDelete bool, exclusi
 	return c, nil
 }
 
+// Send 发送消息
 func (q *topic) Send(routingKey string, body []byte) error {
+	return q.SendWithContentType("text/plain", routingKey, body)
+}
+
+// SendWithContentType 发送消息
+func (q *topic) SendWithContentType(contentType string, routingKey string, body []byte) error {
 	channel := di.GetRabbit()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -58,7 +66,7 @@ func (q *topic) Send(routingKey string, body []byte) error {
 		false,
 		false,
 		amqp.Publishing{
-			ContentType: "text/plain",
+			ContentType: contentType,
 			Body:        body,
 		},
 	)
@@ -66,7 +74,14 @@ func (q *topic) Send(routingKey string, body []byte) error {
 	return err
 }
 
-func (q *topic) Receive(queueName string, routingKeys []string) (<-chan amqp.Delivery, error) {
+// Receive 接收消息
+func (q *topic) Receive(queueName string) (<-chan amqp.Delivery, error) {
+	routingKeys := []string{"#"}
+	return q.ReceiveWithRoutingKeys(queueName, routingKeys)
+}
+
+// ReceiveWithRoutingKeys 接收消息
+func (q *topic) ReceiveWithRoutingKeys(queueName string, routingKeys []string) (<-chan amqp.Delivery, error) {
 	channel := di.GetRabbit()
 
 	queue, err := channel.QueueDeclare(

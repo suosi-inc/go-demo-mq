@@ -15,10 +15,12 @@ type simple struct {
 	Exclusive  bool
 }
 
+// NewSimple 声明简单队列
 func NewSimple(name string) (*simple, error) {
 	return NewSimpleWithOptions(name, true, false, false)
 }
 
+// NewSimpleWithOptions 声明简单队列
 func NewSimpleWithOptions(name string, durable bool, autoDelete bool, exclusive bool) (*simple, error) {
 	channel := di.GetRabbit()
 
@@ -46,7 +48,13 @@ func NewSimpleWithOptions(name string, durable bool, autoDelete bool, exclusive 
 	return c, nil
 }
 
+// Send 发送消息
 func (q *simple) Send(body []byte) error {
+	return q.SendWithContentType("text/plain", body)
+}
+
+// SendWithContentType 发送消息
+func (q *simple) SendWithContentType(contentType string, body []byte) error {
 	channel := di.GetRabbit()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -59,7 +67,7 @@ func (q *simple) Send(body []byte) error {
 		false,
 		false,
 		amqp.Publishing{
-			ContentType: "text/plain",
+			ContentType: contentType,
 			Body:        body,
 		},
 	)
@@ -67,6 +75,7 @@ func (q *simple) Send(body []byte) error {
 	return err
 }
 
+// Receive 接收消息
 func (q *simple) Receive() (<-chan amqp.Delivery, error) {
 	channel := di.GetRabbit()
 

@@ -6,8 +6,8 @@ import (
 
 	"github.com/suosi-inc/go-demo/mq/internal/mq/config"
 	"github.com/suosi-inc/go-demo/mq/internal/mq/data/domain"
-	"github.com/suosi-inc/go-demo/mq/internal/mq/rabbit"
 	"github.com/suosi-inc/go-demo/mq/internal/pkg/log"
+	rabbit2 "github.com/suosi-inc/go-demo/mq/internal/pkg/rabbit"
 	"github.com/x-funs/go-fun"
 )
 
@@ -19,7 +19,7 @@ func RabbitSimple() {
 	}
 
 	queueName := config.Cfg.Queue.Simple.Name
-	simple, _ := rabbit.NewSimple(queueName)
+	simple, _ := rabbit2.NewSimple(queueName)
 
 	for i := 0; i < goroutines; i++ {
 		no := i
@@ -54,12 +54,13 @@ func RabbitTopic() {
 	exchangeName := config.Cfg.Queue.Topic.Exchange
 	queueName := config.Cfg.Queue.Topic.Name
 	routingKeys := fun.SliceTrim(config.Cfg.Queue.Topic.RoutingKeys)
-	topic, _ := rabbit.NewTopic(exchangeName)
+
+	topic, _ := rabbit2.NewTopic(exchangeName)
 
 	for i := 0; i < goroutines; i++ {
 		no := i
 		go func() {
-			if msgs, err := topic.Receive(queueName, routingKeys); err == nil {
+			if msgs, err := topic.ReceiveWithRoutingKeys(queueName, routingKeys); err == nil {
 				for msg := range msgs {
 					var demo domain.Demo
 					if e := json.Unmarshal(msg.Body, &demo); e == nil {

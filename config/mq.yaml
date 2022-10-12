@@ -22,4 +22,4 @@ queue:
     name: go-topic-log
     goroutines: 3
     routingKeys:
-      - "log.*"
+      - '#'
