@@ -6,6 +6,7 @@ require gopkg.in/yaml.v2 v2.4.0 // indirect; indirects
 
 require (
 	github.com/rabbitmq/amqp091-go v1.5.0
+	github.com/segmentio/kafka-go v0.4.35
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.13.0
 	github.com/x-funs/go-fun v0.75.0
@@ -23,7 +24,6 @@ require (
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
-	github.com/segmentio/kafka-go v0.4.35 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
