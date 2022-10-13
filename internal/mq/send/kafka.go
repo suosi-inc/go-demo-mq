@@ -1,4 +1,4 @@
-package sender
+package send
 
 import (
 	"context"
@@ -18,6 +18,8 @@ func KafkaTopic() {
 
 	var id int
 
+	ctx := context.Background()
+
 	for {
 		id++
 		msg := domain.Demo{
@@ -28,9 +30,9 @@ func KafkaTopic() {
 
 		msgJson := fun.ToJson(msg)
 
-		err := w.WriteMessages(context.Background(),
+		err := w.WriteMessages(ctx,
 			kafka.Message{
-				Value: []byte("Hello World!"),
+				Value: fun.Bytes(msgJson),
 			},
 		)
 
@@ -41,6 +43,6 @@ func KafkaTopic() {
 		}
 
 		// sleep
-		time.Sleep(time.Millisecond * 10)
+		time.Sleep(time.Millisecond * 1000)
 	}
 }

@@ -16,6 +16,9 @@ func NewWriter(topic string) *kafka.Writer {
 
 	servers := config.Cfg.Kafka.Servers
 
+	// 消息发送异步确认
+	async := config.Cfg.Kafka.Write.Async
+
 	// 生产者压缩算法
 	compress := kafka.Lz4
 	if !fun.Blank(config.Cfg.Kafka.Compress) {
@@ -50,6 +53,7 @@ func NewWriter(topic string) *kafka.Writer {
 			Topic:     topic,
 			Balancer:  &kafka.Hash{},
 			Transport: sharedTransport,
+			Async:     async,
 		}
 
 	} else {
@@ -58,6 +62,7 @@ func NewWriter(topic string) *kafka.Writer {
 			Topic:       topic,
 			Compression: compress,
 			Balancer:    &kafka.Hash{},
+			Async:       async,
 		}
 	}
 
@@ -68,6 +73,24 @@ func NewReader(topic string, groupId string) *kafka.Reader {
 	r := &kafka.Reader{}
 
 	servers := config.Cfg.Kafka.Servers
+
+	// 新的消费者组消息偏移(最初或最近)
+	offset := kafka.FirstOffset
+	if !fun.Blank(config.Cfg.Kafka.Read.Offset) && "last" == strings.ToLower(config.Cfg.Kafka.Read.Offset) {
+		offset = kafka.LastOffset
+	}
+
+	// 消息最大字节数
+	maxBytes := 1024000
+	if config.Cfg.Kafka.Read.MaxBytes > 0 {
+		maxBytes = config.Cfg.Kafka.Read.MaxBytes
+	}
+
+	// ack 异步提交间隔，0 表示同步
+	commitInterval := time.Duration(0)
+	if config.Cfg.Kafka.Read.CommitInterval > 0 {
+		commitInterval = time.Millisecond * time.Duration(config.Cfg.Kafka.Read.CommitInterval)
+	}
 
 	// 是否 Sasl 认证
 	if config.Cfg.Kafka.Sasl.Enable {
@@ -86,17 +109,25 @@ func NewReader(topic string, groupId string) *kafka.Reader {
 		}
 
 		r = kafka.NewReader(kafka.ReaderConfig{
-			Brokers: servers,
-			GroupID: "consumer-group-id",
-			Topic:   "topic-A",
-			Dialer:  dialer,
+			Brokers:          servers,
+			GroupID:          groupId,
+			Topic:            topic,
+			MaxBytes:         maxBytes,
+			StartOffset:      offset,
+			CommitInterval:   commitInterval,
+			RebalanceTimeout: time.Second * 60,
+			Dialer:           dialer,
 		})
 
 	} else {
 		r = kafka.NewReader(kafka.ReaderConfig{
-			Brokers: servers,
-			GroupID: groupId,
-			Topic:   topic,
+			Brokers:          servers,
+			GroupID:          groupId,
+			Topic:            topic,
+			MaxBytes:         maxBytes,
+			StartOffset:      offset,
+			CommitInterval:   commitInterval,
+			RebalanceTimeout: time.Second * 60,
 		})
 	}
 

@@ -31,6 +31,12 @@ kafka:
     - kafka-online2:9092
     - kafka-online3:9092
   compress: lz4
+  write:
+    async: true
+  read:
+    offset: last
+    commitInterval: 0
+    MaxBytes: 4096000
   sasl:
     enable: false
     mechanism: PLAIN
@@ -40,4 +46,4 @@ kafka:
 kafkaQueue:
   topic: go-test
   groupId: go-test-group
-  goroutines: 1
+  goroutines: 3

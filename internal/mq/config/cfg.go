@@ -47,7 +47,15 @@ type rabbitQueue struct {
 type kafka struct {
 	Servers  []string `json:"servers"`
 	Compress string   `json:"compress"`
-	Sasl     struct {
+	Write    struct {
+		Async bool `json:"async"`
+	} `json:"write"`
+	Read struct {
+		CommitInterval int64  `json:"commitInterval"`
+		MaxBytes       int    `json:"maxBytes"`
+		Offset         string `json:"offset"`
+	} `json:"read"`
+	Sasl struct {
 		Enable    bool   `json:"enable"`
 		Mechanism string `json:"mechanism"`
 		Username  string `json:"username"`

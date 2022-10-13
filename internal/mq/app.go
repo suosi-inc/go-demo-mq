@@ -1,10 +1,6 @@
 package mq
 
 import (
-	"os"
-	"os/signal"
-	"syscall"
-
 	"github.com/spf13/viper"
 	"github.com/suosi-inc/go-demo/mq/internal/mq/config"
 	"github.com/suosi-inc/go-demo/mq/internal/mq/setup"
@@ -27,11 +23,6 @@ func NewApp(args []string) error {
 	if len(args) > 0 {
 		newRun(args)
 	}
-
-	// Wait for interrupt signal to gracefully shutdown
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
 
 	return nil
 }
