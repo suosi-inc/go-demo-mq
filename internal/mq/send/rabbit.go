@@ -11,7 +11,6 @@ import (
 )
 
 func RabbitSimple() {
-	deliveryMode := config.Cfg.Rabbit.DeliveryMode
 	queueName := config.Cfg.RabbitQueue.Simple.Name
 
 	if simple, err := rabbits.NewSimple(queueName); err == nil {
@@ -27,7 +26,7 @@ func RabbitSimple() {
 
 			msgJson := fun.ToJson(msg)
 
-			if err := simple.SendWithMode(fun.Bytes(msgJson), deliveryMode); err == nil {
+			if err := simple.Send(fun.Bytes(msgJson)); err == nil {
 				log.Info("Send simple success", log.String("msg", msgJson))
 			} else {
 				log.Error("Send simple error")

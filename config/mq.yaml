@@ -11,7 +11,7 @@ logger:
 
 rabbit:
   amqp: amqp://admin:admin@localhost:5672
-  prefetch: 5
+  prefetch: 1
   deliveryMode: 2
 
 rabbitQueue:
@@ -35,7 +35,7 @@ kafka:
     async: true
   read:
     offset: last
-    commitInterval: 0
+    commitInterval: 1
     MaxBytes: 4096000
   sasl:
     enable: false
