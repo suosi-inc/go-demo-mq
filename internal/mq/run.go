@@ -9,17 +9,17 @@ import (
 func newRun(args []string) {
 	arg := args[0]
 	switch arg {
-	case "rabbit-sender-simple":
+	case "rabbit-send-simple":
 		sender.RabbitSimple()
-	case "rabbit-receiver-simple":
+	case "rabbit-receive-simple":
 		receiver.RabbitSimple()
-	case "rabbit-sender-topic":
+	case "rabbit-send-topic":
 		sender.RabbitTopic()
-	case "rabbit-receiver-topic":
+	case "rabbit-receive-topic":
 		receiver.RabbitTopic()
 	case "kafka-send-topic":
 		sender.KafkaTopic()
-	case "kafka-receiver-topic":
+	case "kafka-receive-topic":
 		receiver.KafkaTopic()
 	default:
 		log.Error("Run args failed")

@@ -26,8 +26,9 @@ type logger struct {
 }
 
 type rabbit struct {
-	Amqp     string `json:"amqp"`
-	Prefetch int    `json:"prefetch"`
+	Amqp         string `json:"amqp"`
+	Prefetch     int    `json:"prefetch"`
+	DeliveryMode uint8  `json:"deliveryMode"`
 }
 
 type rabbitQueue struct {

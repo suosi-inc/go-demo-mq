@@ -50,11 +50,16 @@ func NewSimpleWithOptions(name string, durable bool, autoDelete bool, exclusive 
 
 // Send 发送消息
 func (q *simple) Send(body []byte) error {
-	return q.SendWithContentType("text/plain", body)
+	return q.SendWithOptions(body, 2, "text/plain")
 }
 
-// SendWithContentType 发送消息
-func (q *simple) SendWithContentType(contentType string, body []byte) error {
+// SendWithMode 发送消息
+func (q *simple) SendWithMode(body []byte, mode uint8) error {
+	return q.SendWithOptions(body, mode, "text/plain")
+}
+
+// SendWithOptions 发送消息s
+func (q *simple) SendWithOptions(body []byte, mode uint8, contentType string) error {
 	channel := di.GetRabbit()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -67,8 +72,9 @@ func (q *simple) SendWithContentType(contentType string, body []byte) error {
 		false,
 		false,
 		amqp.Publishing{
-			ContentType: contentType,
-			Body:        body,
+			ContentType:  contentType,
+			Body:         body,
+			DeliveryMode: mode,
 		},
 	)
 

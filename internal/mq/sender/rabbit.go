@@ -11,7 +11,9 @@ import (
 )
 
 func RabbitSimple() {
+	deliveryMode := config.Cfg.Rabbit.DeliveryMode
 	queueName := config.Cfg.RabbitQueue.Simple.Name
+
 	if simple, err := rabbits.NewSimple(queueName); err == nil {
 		var id int
 
@@ -25,7 +27,7 @@ func RabbitSimple() {
 
 			msgJson := fun.ToJson(msg)
 
-			if err := simple.Send(fun.Bytes(msgJson)); err == nil {
+			if err := simple.SendWithMode(fun.Bytes(msgJson), deliveryMode); err == nil {
 				log.Info("Send simple success", log.String("msg", msgJson))
 			} else {
 				log.Error("Send simple error")
@@ -38,6 +40,7 @@ func RabbitSimple() {
 }
 
 func RabbitTopic() {
+	deliveryMode := config.Cfg.Rabbit.DeliveryMode
 	exchangeName := config.Cfg.RabbitQueue.Topic.Exchange
 	if topic, err := rabbits.NewTopic(exchangeName); err == nil {
 
@@ -63,7 +66,7 @@ func RabbitTopic() {
 
 			msgJson := fun.ToJson(msg)
 
-			if err := topic.Send(routingKey, fun.Bytes(msgJson)); err == nil {
+			if err := topic.SendWithMode(fun.Bytes(msgJson), routingKey, deliveryMode); err == nil {
 				log.Info("Send topic success", log.String("key", routingKey), log.String("msg", msgJson))
 			} else {
 				log.Error("Send topic error")

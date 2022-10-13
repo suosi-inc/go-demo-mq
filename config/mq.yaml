@@ -12,6 +12,7 @@ logger:
 rabbit:
   amqp: amqp://admin:admin@localhost:5672
   prefetch: 5
+  deliveryMode: 2
 
 rabbitQueue:
   simple:

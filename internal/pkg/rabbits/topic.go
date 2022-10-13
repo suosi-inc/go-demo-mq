@@ -49,12 +49,17 @@ func NewTopicWithOptions(exchange string, durable bool, autoDelete bool, exclusi
 }
 
 // Send 发送消息
-func (q *topic) Send(routingKey string, body []byte) error {
-	return q.SendWithContentType("text/plain", routingKey, body)
+func (q *topic) Send(body []byte, routingKey string) error {
+	return q.SendWithOptions(body, routingKey, 2, "text/plain")
 }
 
-// SendWithContentType 发送消息
-func (q *topic) SendWithContentType(contentType string, routingKey string, body []byte) error {
+// SendWithMode 发送消息
+func (q *topic) SendWithMode(body []byte, routingKey string, mode uint8) error {
+	return q.SendWithOptions(body, routingKey, mode, "text/plain")
+}
+
+// SendWithOptions 发送消息
+func (q *topic) SendWithOptions(body []byte, routingKey string, mode uint8, contentType string) error {
 	channel := di.GetRabbit()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -66,8 +71,9 @@ func (q *topic) SendWithContentType(contentType string, routingKey string, body 
 		false,
 		false,
 		amqp.Publishing{
-			ContentType: contentType,
-			Body:        body,
+			Body:         body,
+			DeliveryMode: mode,
+			ContentType:  contentType,
 		},
 	)
 
