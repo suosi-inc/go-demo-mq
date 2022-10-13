@@ -27,9 +27,9 @@ rabbitQueue:
 
 kafka:
   servers:
-    - kafka-online1:9093
-    - kafka-online2:9093
-    - kafka-online3:9093
+    - kafka-online1:9092
+    - kafka-online2:9092
+    - kafka-online3:9092
   compress: lz4
   write:
     async: true
