@@ -27,9 +27,9 @@ rabbitQueue:
 
 kafka:
   servers:
-    - kafka-online1:9092
-    - kafka-online2:9092
-    - kafka-online3:9092
+    - kafka-online1:9093
+    - kafka-online2:9093
+    - kafka-online3:9093
   compress: lz4
   write:
     async: true
@@ -41,7 +41,7 @@ kafka:
     enable: false
     mechanism: PLAIN
     username: admin
-    password: 08afd6f9ae0c6017d105b4ce580de885
+    password: admin
 
 kafkaQueue:
   topic: go-test
