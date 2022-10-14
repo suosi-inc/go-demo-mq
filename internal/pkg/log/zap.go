@@ -6,8 +6,14 @@ import (
 
 type ZapLogFunc func(msg string, fields ...zap.Field)
 
+type ZapLogTemplateFunc func(template string, args ...interface{})
+
+type ZapLogStructFunc func(msg string, keysAndValues ...interface{})
+
 var (
-	Debug, Info, Warn, Error, Panic, Fatal ZapLogFunc
+	Debug, Info, Warn, Error, Panic, Fatal       ZapLogFunc
+	Debugf, Infof, Warnf, Errorf, Panicf, Fatalf ZapLogTemplateFunc
+	Debugw, Infow, Warnw, Errorw, Panicw, Fatalw ZapLogStructFunc
 
 	Skip        = zap.Skip
 	Binary      = zap.Binary
@@ -66,4 +72,18 @@ func ZapToLog() {
 	Error = zap.L().Error
 	Panic = zap.L().Panic
 	Fatal = zap.L().Fatal
+
+	Debugf = zap.S().Debugf
+	Infof = zap.S().Infof
+	Warnf = zap.S().Warnf
+	Errorf = zap.S().Errorf
+	Panicf = zap.S().Panicf
+	Fatalf = zap.S().Fatalf
+
+	Debugw = zap.S().Debugw
+	Infow = zap.S().Infow
+	Warnw = zap.S().Warnw
+	Errorw = zap.S().Errorw
+	Panicw = zap.S().Panicw
+	Fatalw = zap.S().Fatalw
 }

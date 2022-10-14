@@ -17,7 +17,7 @@ func NewApp(args []string) error {
 
 	setupDi()
 
-	log.Info("args:", log.Any("", args))
+	log.Infof("args: %v", args)
 
 	// Run args
 	if len(args) > 0 {
@@ -34,7 +34,7 @@ func bootstrap() {
 	if err != nil {
 		panic("Unable to decode config into struct: ")
 	}
-	log.Info("Config into struct", log.Any("cfg", Cfg))
+	log.Info("Config into struct: ", log.Any("cfg", Cfg))
 }
 
 // setupDi setup service and set di
