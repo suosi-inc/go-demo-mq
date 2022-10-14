@@ -37,7 +37,7 @@ kafka:
   read:
     offset: last    # 新的消费者组读取消息的偏移模式(first,last), 默认 last
     commitInterval: 1   # ack 异步确认间隔秒数，0 表示同步确认, 默认是 0 
-    MaxBytes: 4096000 # 消息最大字节数限制，应当小于服务器配置
+    MaxBytes: 4096000 # 消息最大字节数限制，应当小于服务器配置, 默认 1MB
   sasl:  # Sasl 认证相关配置
     enable: false
     mechanism: PLAIN
