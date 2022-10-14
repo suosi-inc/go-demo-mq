@@ -75,9 +75,9 @@ func NewReader(topic string, groupId string) *kafka.Reader {
 	servers := config.Cfg.Kafka.Servers
 
 	// 新的消费者组消息偏移(最初或最近)
-	offset := kafka.FirstOffset
-	if !fun.Blank(config.Cfg.Kafka.Read.Offset) && "last" == strings.ToLower(config.Cfg.Kafka.Read.Offset) {
-		offset = kafka.LastOffset
+	offset := kafka.LastOffset
+	if !fun.Blank(config.Cfg.Kafka.Read.Offset) && "first" == strings.ToLower(config.Cfg.Kafka.Read.Offset) {
+		offset = kafka.FirstOffset
 	}
 
 	// 消息最大字节数
