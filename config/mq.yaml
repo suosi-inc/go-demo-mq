@@ -26,10 +26,7 @@ rabbitQueue:
       - '#'
 
 kafka:
-  servers:
-    - kafka-online1:9092
-    - kafka-online2:9092
-    - kafka-online3:9092
+  servers: kafka-online1:9092,kafka-online2:9092,kafka-online3:9092
   compress: lz4
   write:
     async: true

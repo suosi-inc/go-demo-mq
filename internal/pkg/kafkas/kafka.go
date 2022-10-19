@@ -15,6 +15,7 @@ func NewWriter(topic string) *kafka.Writer {
 	w := &kafka.Writer{}
 
 	servers := config.Cfg.Kafka.Servers
+	serverList := fun.SplitTrim(servers, ",")
 
 	// 消息发送异步确认
 	async := config.Cfg.Kafka.Write.Async
@@ -49,7 +50,7 @@ func NewWriter(topic string) *kafka.Writer {
 		}
 
 		w = &kafka.Writer{
-			Addr:      kafka.TCP(servers...),
+			Addr:      kafka.TCP(serverList...),
 			Topic:     topic,
 			Balancer:  &kafka.Hash{},
 			Transport: sharedTransport,
@@ -58,7 +59,7 @@ func NewWriter(topic string) *kafka.Writer {
 
 	} else {
 		w = &kafka.Writer{
-			Addr:        kafka.TCP(servers...),
+			Addr:        kafka.TCP(serverList...),
 			Topic:       topic,
 			Compression: compress,
 			Balancer:    &kafka.Hash{},
@@ -73,6 +74,7 @@ func NewReader(topic string, groupId string) *kafka.Reader {
 	r := &kafka.Reader{}
 
 	servers := config.Cfg.Kafka.Servers
+	serverList := fun.SplitTrim(servers, ",")
 
 	// 新的消费者组消息偏移(最初或最近)
 	offset := kafka.LastOffset
@@ -109,7 +111,7 @@ func NewReader(topic string, groupId string) *kafka.Reader {
 		}
 
 		r = kafka.NewReader(kafka.ReaderConfig{
-			Brokers:          servers,
+			Brokers:          serverList,
 			GroupID:          groupId,
 			Topic:            topic,
 			MaxBytes:         maxBytes,
@@ -121,7 +123,7 @@ func NewReader(topic string, groupId string) *kafka.Reader {
 
 	} else {
 		r = kafka.NewReader(kafka.ReaderConfig{
-			Brokers:          servers,
+			Brokers:          serverList,
 			GroupID:          groupId,
 			Topic:            topic,
 			MaxBytes:         maxBytes,
