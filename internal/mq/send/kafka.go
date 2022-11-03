@@ -16,12 +16,9 @@ func KafkaTopic() {
 	topic := config.Cfg.KafkaQueue.Topic
 	w := kafkas.NewWriter(topic)
 
-	var id int
-
 	ctx := context.Background()
 
-	for {
-		id++
+	for id := 0; id < 10; id++ {
 		msg := domain.Demo{
 			Id:   id,
 			Name: fun.RandomLetter(4),

@@ -12,15 +12,14 @@ import (
 )
 
 func RabbitSimple() {
-	// goroutines
+	queueName := config.Cfg.RabbitQueue.Simple.Name
+	simple, _ := rabbits.NewSimple(queueName)
+
+	// 启动多个协程，每个协程都是一个 Consumer
 	goroutines := 1
 	if config.Cfg.RabbitQueue.Simple.Goroutines > 0 {
 		goroutines = config.Cfg.RabbitQueue.Simple.Goroutines
 	}
-
-	queueName := config.Cfg.RabbitQueue.Simple.Name
-	simple, _ := rabbits.NewSimple(queueName)
-
 	for i := 0; i < goroutines; i++ {
 		no := i
 		go func() {
@@ -46,18 +45,17 @@ func RabbitSimple() {
 }
 
 func RabbitTopic() {
-	// goroutines
-	goroutines := 1
-	if config.Cfg.RabbitQueue.Topic.Goroutines > 0 {
-		goroutines = config.Cfg.RabbitQueue.Topic.Goroutines
-	}
-
 	exchangeName := config.Cfg.RabbitQueue.Topic.Exchange
 	queueName := config.Cfg.RabbitQueue.Topic.Name
 	routingKeys := fun.SliceTrim(config.Cfg.RabbitQueue.Topic.RoutingKeys)
 
 	topic, _ := rabbits.NewTopic(exchangeName)
 
+	// 启动多个协程, 每个协程都是一个 Consumer
+	goroutines := 1
+	if config.Cfg.RabbitQueue.Topic.Goroutines > 0 {
+		goroutines = config.Cfg.RabbitQueue.Topic.Goroutines
+	}
 	for i := 0; i < goroutines; i++ {
 		no := i
 		go func() {

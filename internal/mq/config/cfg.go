@@ -47,6 +47,7 @@ type rabbitQueue struct {
 type kafka struct {
 	Servers  string `json:"servers"`
 	Compress string `json:"compress"`
+	Logger   bool   `json:"logger"`
 	Write    struct {
 		Async bool `json:"async"`
 	} `json:"write"`

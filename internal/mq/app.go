@@ -3,7 +3,6 @@ package mq
 import (
 	"github.com/spf13/viper"
 	"github.com/suosi-inc/go-demo/mq/internal/mq/config"
-	"github.com/suosi-inc/go-demo/mq/internal/mq/setup"
 	"github.com/suosi-inc/go-demo/mq/internal/pkg/log"
 )
 
@@ -39,5 +38,4 @@ func bootstrap() {
 
 // setupDi setup service and set di
 func setupDi() {
-	setup.Rabbit()
 }

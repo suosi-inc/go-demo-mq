@@ -1,6 +1,8 @@
 package kafkas
 
 import (
+	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -35,6 +37,9 @@ func NewWriter(topic string) *kafka.Writer {
 		}
 	}
 
+	// 日志开关
+	logger := config.Cfg.Kafka.Logger
+
 	// 是否 Sasl 认证
 	if config.Cfg.Kafka.Sasl.Enable {
 		var mechanism sasl.Mechanism
@@ -57,6 +62,10 @@ func NewWriter(topic string) *kafka.Writer {
 			Async:     async,
 		}
 
+		if logger {
+			w.Logger = Logger{"[INFO]"}
+			w.ErrorLogger = Logger{"[ERROR]"}
+		}
 	} else {
 		w = &kafka.Writer{
 			Addr:        kafka.TCP(serverList...),
@@ -64,6 +73,11 @@ func NewWriter(topic string) *kafka.Writer {
 			Compression: compress,
 			Balancer:    &kafka.Hash{},
 			Async:       async,
+		}
+
+		if logger {
+			w.Logger = Logger{"[INFO]"}
+			w.ErrorLogger = Logger{"[ERROR]"}
 		}
 	}
 
@@ -83,7 +97,7 @@ func NewReader(topic string, groupId string) *kafka.Reader {
 	}
 
 	// 消息最大字节数
-	maxBytes := 1024000
+	maxBytes := 102400
 	if config.Cfg.Kafka.Read.MaxBytes > 0 {
 		maxBytes = config.Cfg.Kafka.Read.MaxBytes
 	}
@@ -93,6 +107,9 @@ func NewReader(topic string, groupId string) *kafka.Reader {
 	if config.Cfg.Kafka.Read.CommitInterval > 0 {
 		commitInterval = time.Millisecond * time.Duration(config.Cfg.Kafka.Read.CommitInterval)
 	}
+
+	// 日志开关
+	logger := config.Cfg.Kafka.Logger
 
 	// 是否 Sasl 认证
 	if config.Cfg.Kafka.Sasl.Enable {
@@ -110,28 +127,57 @@ func NewReader(topic string, groupId string) *kafka.Reader {
 			SASLMechanism: mechanism,
 		}
 
-		r = kafka.NewReader(kafka.ReaderConfig{
-			Brokers:          serverList,
-			GroupID:          groupId,
-			Topic:            topic,
-			MaxBytes:         maxBytes,
-			StartOffset:      offset,
-			CommitInterval:   commitInterval,
-			RebalanceTimeout: time.Second * 60,
+		readerConfig := kafka.ReaderConfig{
 			Dialer:           dialer,
-		})
-
-	} else {
-		r = kafka.NewReader(kafka.ReaderConfig{
 			Brokers:          serverList,
 			GroupID:          groupId,
 			Topic:            topic,
 			MaxBytes:         maxBytes,
 			StartOffset:      offset,
 			CommitInterval:   commitInterval,
-			RebalanceTimeout: time.Second * 60,
-		})
+			RebalanceTimeout: time.Second * 180,
+		}
+
+		if logger {
+			readerConfig.Logger = Logger{"[INFO]"}
+			readerConfig.ErrorLogger = Logger{"[ERROR]"}
+		}
+
+		r = kafka.NewReader(readerConfig)
+	} else {
+		readerConfig := kafka.ReaderConfig{
+			Brokers:          serverList,
+			GroupID:          groupId,
+			Topic:            topic,
+			MaxBytes:         maxBytes,
+			StartOffset:      offset,
+			CommitInterval:   commitInterval,
+			RebalanceTimeout: time.Second * 180,
+			Logger:           Logger{"[INFO]"},
+			ErrorLogger:      Logger{"[ERROR]"},
+		}
+
+		if logger {
+			readerConfig.Logger = Logger{"[INFO]"}
+			readerConfig.ErrorLogger = Logger{"[ERROR]"}
+		}
+
+		r = kafka.NewReader(readerConfig)
 	}
 
 	return r
+}
+
+type Logger struct {
+	Level string
+}
+
+func (l Logger) Printf(msg string, args ...interface{}) {
+	msg = fmt.Sprintf("%s [%s] %s\n", l.Level, time.Now().Format(time.RFC3339Nano), msg)
+	fmt.Printf(msg, args...)
+
+	m := fmt.Sprintf(msg, args...)
+
+	f, _ := os.OpenFile("kafka.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	_, _ = f.Write([]byte(m))
 }

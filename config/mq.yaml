@@ -16,11 +16,11 @@ rabbit:
 
 rabbitQueue:
   simple:
-    name: go-simple
+    name: test-simple
     goroutines: 3
   topic:
-    exchange: go-topic
-    name: go-topic-log
+    exchange: test-topic
+    name: test-topic-log
     goroutines: 3
     routingKeys:
       - '#'
@@ -28,12 +28,13 @@ rabbitQueue:
 kafka:
   servers: kafka-online1:9092,kafka-online2:9092,kafka-online3:9092
   compress: lz4
+  logger: true
   write:
     async: true
   read:
     offset: last
-    commitInterval: 0
-    MaxBytes: 4096000
+    commitInterval: 1
+    MaxBytes: 102400
   sasl:
     enable: false
     mechanism: PLAIN
@@ -41,6 +42,6 @@ kafka:
     password: admin
 
 kafkaQueue:
-  topic: go-test
-  groupId: go-test-group
+  topic: test-topic
+  groupId: test-topic-group
   goroutines: 3
