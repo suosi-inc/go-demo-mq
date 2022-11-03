@@ -15,6 +15,8 @@ import (
 
 const (
 	KafkaTraceFile = "kafka-trace.log"
+	KafkaInfo      = "[INFO]"
+	KafkaError     = "[ERROR]"
 )
 
 func NewWriter(topic string) *kafka.Writer {
@@ -67,8 +69,8 @@ func NewWriter(topic string) *kafka.Writer {
 		}
 
 		if logger {
-			w.Logger = Logger{"[INFO]"}
-			w.ErrorLogger = Logger{"[ERROR]"}
+			w.Logger = Logger{KafkaInfo}
+			w.ErrorLogger = Logger{KafkaError}
 		}
 	} else {
 		w = &kafka.Writer{
@@ -80,8 +82,8 @@ func NewWriter(topic string) *kafka.Writer {
 		}
 
 		if logger {
-			w.Logger = Logger{"[INFO]"}
-			w.ErrorLogger = Logger{"[ERROR]"}
+			w.Logger = Logger{KafkaInfo}
+			w.ErrorLogger = Logger{KafkaError}
 		}
 	}
 
@@ -140,11 +142,12 @@ func NewReader(topic string, groupId string) *kafka.Reader {
 			StartOffset:      offset,
 			CommitInterval:   commitInterval,
 			RebalanceTimeout: time.Second * 180,
+			MaxAttempts:      5,
 		}
 
 		if logger {
-			readerConfig.Logger = Logger{"[INFO]"}
-			readerConfig.ErrorLogger = Logger{"[ERROR]"}
+			readerConfig.Logger = Logger{KafkaInfo}
+			readerConfig.ErrorLogger = Logger{KafkaError}
 		}
 
 		r = kafka.NewReader(readerConfig)
@@ -157,11 +160,12 @@ func NewReader(topic string, groupId string) *kafka.Reader {
 			StartOffset:      offset,
 			CommitInterval:   commitInterval,
 			RebalanceTimeout: time.Second * 180,
+			MaxAttempts:      5,
 		}
 
 		if logger {
-			readerConfig.Logger = Logger{"[INFO]"}
-			readerConfig.ErrorLogger = Logger{"[ERROR]"}
+			readerConfig.Logger = Logger{KafkaInfo}
+			readerConfig.ErrorLogger = Logger{KafkaError}
 		}
 
 		r = kafka.NewReader(readerConfig)
