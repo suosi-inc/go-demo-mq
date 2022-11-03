@@ -18,7 +18,7 @@ func KafkaTopic() {
 
 	ctx := context.Background()
 
-	for id := 0; id < 10; id++ {
+	for id := 0; id < 6; id++ {
 		msg := domain.Demo{
 			Id:   id,
 			Name: fun.RandomLetter(4),
@@ -40,6 +40,9 @@ func KafkaTopic() {
 		}
 
 		// sleep
-		time.Sleep(time.Millisecond * 1000)
+		time.Sleep(time.Millisecond * 100)
 	}
+
+	// Kafka Writer 如果是 Async, 需要延时等待结果
+	time.Sleep(time.Second * 3)
 }

@@ -13,6 +13,10 @@ import (
 	"github.com/x-funs/go-fun"
 )
 
+const (
+	KafkaTraceFile = "kafka-trace.log"
+)
+
 func NewWriter(topic string) *kafka.Writer {
 	w := &kafka.Writer{}
 
@@ -153,8 +157,6 @@ func NewReader(topic string, groupId string) *kafka.Reader {
 			StartOffset:      offset,
 			CommitInterval:   commitInterval,
 			RebalanceTimeout: time.Second * 180,
-			Logger:           Logger{"[INFO]"},
-			ErrorLogger:      Logger{"[ERROR]"},
 		}
 
 		if logger {
@@ -178,6 +180,6 @@ func (l Logger) Printf(msg string, args ...interface{}) {
 
 	m := fmt.Sprintf(msg, args...)
 
-	f, _ := os.OpenFile("kafka.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, _ := os.OpenFile(KafkaTraceFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	_, _ = f.Write([]byte(m))
 }

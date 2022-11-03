@@ -44,4 +44,4 @@ kafka:
 kafkaQueue:
   topic: test-topic
   groupId: test-topic-group
-  goroutines: 3
+  goroutines: 2

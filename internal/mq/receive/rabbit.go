@@ -27,7 +27,7 @@ func RabbitSimple() {
 				for msg := range msgs {
 					var demo domain.Demo
 					if e := json.Unmarshal(msg.Body, &demo); e == nil {
-						log.Info("Received simple message:", log.Int("no", no), log.Any("demo", demo))
+						log.Infof("Received-%d simple message : %+v", no, demo)
 
 						// 模拟耗时
 						s := fun.RandomInt(300, 800)
@@ -63,7 +63,7 @@ func RabbitTopic() {
 				for msg := range msgs {
 					var demo domain.Demo
 					if e := json.Unmarshal(msg.Body, &demo); e == nil {
-						log.Info("Received topic message:", log.Int("no", no), log.Any("demo", demo))
+						log.Infof("Received-%d topic message : %+v", no, demo)
 
 						// 模拟耗时
 						s := fun.RandomInt(300, 800)
