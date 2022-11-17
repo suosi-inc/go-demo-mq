@@ -11,7 +11,7 @@ func Rabbit() {
 	if connection, err := amqp.Dial(config.Cfg.Rabbit.Amqp); err == nil {
 		if channel, err := connection.Channel(); err == nil {
 
-			// Qos
+			// Qos prefetch 仅仅在手动 ack 时有效
 			if config.Cfg.Rabbit.Prefetch > 0 {
 				_ = channel.Qos(config.Cfg.Rabbit.Prefetch, 0, false)
 			}
