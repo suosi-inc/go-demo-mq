@@ -2,6 +2,9 @@ package receive
 
 import (
 	"encoding/json"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/suosi-inc/go-demo/mq/internal/mq/config"
@@ -42,6 +45,11 @@ func RabbitSimple() {
 			}
 		}()
 	}
+
+	// Wait for interrupt signal to gracefully shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
 }
 
 func RabbitTopic() {
@@ -78,4 +86,9 @@ func RabbitTopic() {
 			}
 		}()
 	}
+
+	// Wait for interrupt signal to gracefully shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
 }
